@@ -1,0 +1,425 @@
+//first interface with javadoc
+package end.edu.alexu.csd.datastructure.stack.cs39;
+
+public interface IExpressionEvaluator {
+	/**
+	* Takes a symbolic/numeric infix expression as input and converts it to
+	* postfix notation. There is no assumption on spaces between terms or the
+	* length of the term (e.g., two digits symbolic or numeric term)
+	*
+	* @param expression
+	* infix expression
+	* @return postfix expression
+	*/
+	public String infixToPostfix(String expression);
+	/**
+	* Evaluate a postfix numeric expression, with a single space separator
+	*
+	* @param expression
+	* postfix expression
+	* @return the expression evaluated value
+	*/
+	public int evaluate(String expression);
+}
+//scond interface with java doc
+
+package end.edu.alexu.csd.datastructure.stack.cs39;
+//from last assignment
+public interface ILinkedList {
+	public int counter=0;
+	public Node head = null;
+	public void add(int index, Object element);//at particular index
+	public void add(Object element);//add at the end used in stack
+	public Object get(int index);
+	public void set(int index, Object element);
+	public void clear();
+	public boolean isEmpty();
+	public void remove(int index);
+	public int size();
+	public ILinkedList sublist(int fromIndex, int toIndex);
+	public boolean contains(Object o);
+}
+
+// third interface
+package end.edu.alexu.csd.datastructure.stack.cs39;
+
+public interface IStack {
+	/**
+	* Removes the element at the top of stack and returns that element.
+	*
+	* @return top of stack element, or through exception if empty
+	*/
+	public Object pop();
+	/**
+	* Get the element at the top of stack without removing it from stack.
+	*
+	* @return top of stack element, or through exception if empty
+	*/
+	public Object peek();
+	/**
+	* Pushes an item onto the top of this stack.
+	*
+	* @param object
+	* to insert
+	*/
+	public void push(Object element);
+	/**
+	* Tests if this stack is empty
+	*
+	* @return true if stack empty
+	*/
+	public boolean isEmpty();
+	/**
+	* Returns the number of elements in the stack.
+	*
+	* @return number of elements in the stack
+	*/
+	public int size();
+}
+//class Node
+package end.edu.alexu.csd.datastructure.stack.cs39;
+
+
+public class Node {
+Object value ; 
+Node next ;
+Node (Object x){
+	value = x ;
+	next = null ;
+}
+public Node(Object x,Node nextVal) { //point at particular node
+	next = nextVal;
+	value = x;
+}
+
+public Object getData() {
+	return value;
+}
+public void setData(Object val) {
+	value = val;
+}
+public Node getNext() {
+	return next;
+}
+public void setNext(Node nextVal) {
+	next = nextVal;
+}
+}
+//class singlylinkedlist
+package end.edu.alexu.csd.datastructure.stack.cs39;
+//from last assignment
+public class singlyLinkedList implements ILinkedList {
+	public int counter=0;
+	public Node head = null;
+	public singlyLinkedList() {
+		
+	}
+	
+	@Override
+	public void add(int index , Object data) {//add at the end
+		// TODO Auto-generated method stub
+		Node temp = new Node(data);
+		Node curr = head;
+		if(curr != null) {
+			for(int i=0;i<index && curr.getNext() != null;i++) {
+				curr = curr.getNext();
+			}
+		}
+		temp.setNext(curr.getNext());
+		curr.setNext(temp);
+		incrementCounter();
+	}
+	
+	@Override
+	public void add(Object data) {
+		// TODO Auto-generated method stub
+		if(head == null) {
+			head = new Node(data);
+		}
+		Node temp = new Node(data);
+		Node curr = head;
+		if(curr != null) {
+			while(curr.getNext() != null) {
+				curr = curr.getNext();
+			}
+			curr.setNext(temp);
+		}
+		incrementCounter();
+	}
+	
+	private void incrementCounter() {
+		counter++;
+	}
+	private int getCounter() {
+		return counter;
+	}
+	private void decrementCounter() {
+		counter--;
+	}
+	@Override
+	public Object get(int index) {
+		// TODO Auto-generated method stub
+		if(index < 0) return null;
+		Node curr = null;
+		if(head != null) {
+			curr = head.getNext();
+			for(int i=0;i<index;i++) {
+				if(curr.getNext() == null) {
+					return null;
+				}
+				curr = curr.getNext();
+			}
+			return curr.getData();
+		}
+		return curr;
+	}
+
+	@Override
+	public void set(int index, Object element) {
+		// TODO Auto-generated method stub
+		if(index < 0 || index > size()-1) return;
+		Node curr = head.getNext();
+		if(head != null) {
+			for(int i=0;i<index;i++) {
+				if(curr.getNext() == null) return;
+				curr = curr.getNext();
+			}
+		}
+		curr.setData(element);
+		return;
+	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		if(head == null) return;
+		Node curr = head.getNext();
+		while(curr!=null) {
+			Node temp = curr.getNext();
+			curr = null;
+			curr = temp;
+		}
+		head = null;
+		return;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		if(getCounter() == 0) return true;
+		else return false;
+	}
+
+	@Override
+	public void remove(int index) {
+		// TODO Auto-generated method stub
+		if(index < 0 || index > (size() - 1)) {
+			System.out.println("index is wrong");
+			return;
+		}
+		
+		Node curr =head;
+		if(index == 0) head = head.getNext();//head.next
+		if(head != null) {
+			for(int i=0;i<index;i++) {
+				if(curr.getNext() == null) return;
+				curr = curr.getNext();
+			}
+		}
+		curr.setNext(curr.getNext().getNext());
+		decrementCounter();
+		return;
+	}
+
+	@Override
+	public int size() {
+		// TODO Auto-generated method stub
+		return getCounter();
+	}
+
+	@Override
+	public ILinkedList sublist(int fromIndex, int toIndex) {
+		// TODO Auto-generated method stub
+		if(head == null) return null;
+		ILinkedList L = new singlyLinkedList();
+		Node curr = head.getNext();
+		for(int i=0;i<size()&&curr != null;i++) {
+			if(i>=fromIndex && i<=toIndex) {
+				L.add(curr.getData());
+			}
+			curr = curr.getNext();
+		}
+		return L;
+	}
+
+	@Override
+	public boolean contains(Object o) {
+		// TODO Auto-generated method stub
+		if(head == null) return false;
+		Node curr = head.getNext();
+		if(head != null) {
+			while(curr != null) {
+				if(curr.getData() == o) {
+					return true;
+				}
+				curr = curr.getNext();
+			}
+		}
+		return false;
+	}
+	public void print() {
+		Node temp = head;
+		while (temp != null) {
+			System.out.print(temp.getData() + " ");
+			temp = temp.getNext();
+		}
+	}
+
+}
+//class stack
+
+package end.edu.alexu.csd.datastructure.stack.cs39;
+
+public class Stack implements IStack {
+	public ILinkedList s = new singlyLinkedList();
+	public int top;
+	
+	Stack(){
+		top = -1;
+	}
+	@Override
+	public Object pop() {
+		// TODO Auto-generated method stub
+		if(top == -1) {
+			System.out.println("Stack under flow");
+			System.exit(1);
+		}else {
+			s.remove(top);
+			top--;
+		}
+		return null;
+	}
+
+	@Override
+	public Object peek() {
+		// TODO Auto-generated method stub
+		if(top == -1) {
+			System.out.println("Stack under flow");
+			System.exit(1);
+		}else {
+			return s.get(top);
+		}
+		return -1;
+	}
+
+	@Override
+	public void push(Object element) {
+		// TODO Auto-generated method stub
+		s.add(element);
+		top++;
+		return;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return top == -1;
+	}
+
+	@Override
+	public int size() {
+		// TODO Auto-generated method stub
+		return s.size();
+	}
+	
+}
+//class expression evaluator
+package end.edu.alexu.csd.datastructure.stack.cs39;
+
+public class expressionEvaluator implements IExpressionEvaluator {
+	
+	
+
+	static int what_operator (char x) {
+		if (x == '+' || x == '-') {
+			return 1 ;
+		}else if (x == '*' || x == '/') {
+			return 2 ;
+		}else {
+			return -1 ;
+		}
+	}
+	@Override
+	public String infixToPostfix(String expression) {
+		// TODO Auto-generated method stub
+		IStack s = new Stack();
+		String str="";
+		for (int i = 0; i<expression.length(); ++i) 
+        { 
+            char j = (char) expression.charAt(i); 
+              
+            if (Character.isLetterOrDigit(j)) {
+            	str += j; 
+            } else if (j == '('){ 
+                s.push(j); }
+            else if (j == ')'){ 
+                while (!s.isEmpty() && (char) s.peek() != '(' ) {
+                	str += s.peek(); 
+                	s.pop();
+                }
+                if (!s.isEmpty() && (char)s.peek() != '(') { 
+                    return "Invalid Expression";
+                }else {
+                    s.pop(); 
+                }
+            } 
+            else{ 
+                while (!s.isEmpty() && what_operator(j) <= what_operator((char)s.peek())) {
+                	str += s.peek();
+                	s.pop();
+               }
+                	s.push(j); 
+            } 
+       
+        } 
+		while(!s.isEmpty()) {
+			str += (char)s.peek();
+			s.pop();
+		}
+		return str;
+	}
+	
+	@Override
+	public int evaluate(String expression) {
+		// TODO Auto-generated method stub
+		IStack s = new Stack();
+		for(int i=0;i<expression.length();i++) {
+			char c = expression.charAt(i);
+			if(Character.isDigit(c)) {
+				int operand = Integer.parseInt(String.valueOf(c)); //to convert the string to int
+				s.push(operand);
+			}else {
+				int operatr2 = (int)s.peek();
+				s.pop();
+				int operatr1 = (int)s.peek();
+				s.pop();
+				if(c == '/') {
+					int result = operatr1/operatr2;
+					s.push(result);
+				}else if(c == '*') {
+					int result = operatr1*operatr2;
+					s.push(result);
+				}else if(c == '+') {
+					int result = operatr1+operatr2;
+					s.push(result);
+				}else if(c=='-') {
+					int result = operatr1-operatr2;
+					s.push(result);
+				}
+			}
+		}
+		return (int)s.peek();
+	}
+	
+}
+
